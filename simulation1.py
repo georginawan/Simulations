@@ -70,7 +70,7 @@ def i_to_t(deltalist,i):
     return "t = "+str(t)
 
 def test(deltas1,deltas2):
-    input_ = input("What do you want to test?(t=0.4/i=0.8):")
+    input_ = input("What do you want to test?(t=0.4/i=0.8):") # t for delta threshold, i for index, enter space to get out of loop.
     if input_ == " ":
         exit("See you!")
     else:
