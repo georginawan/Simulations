@@ -92,7 +92,7 @@ p,c,m,n1,n2,vc,vp = Input()
 s1 = n1*m
 s2 = n2*m
 s = s1+s2
-#times = 0
+times = 0
 deltas = list()
 while times < 1000000:
     if vc == True:
