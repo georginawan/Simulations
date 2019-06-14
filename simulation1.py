@@ -10,6 +10,37 @@ def mv_to_ab(mean,var):
     beta = (1-mean)/mean*alpha
     return alpha,beta
 
+#if coverage C is variable with given average, e.g.Poisson(n)
+def variableCoverage(n,s,s1,s2,p):
+    c = poisson.rvs(n,size = s)
+    class1 = class2 = 0
+    c1_sum = c2_sum = 0
+    for i in range(s):
+        r = binom.rvs(c[i],p)
+        if i < s1:
+            class1 += r
+            c1_sum += c[i]
+        else:
+            class2 += r
+            c2_sum += c[i]
+    #average methylation level for class 1 and class 2
+    aml1 = class1/c1_sum
+    aml2 = class2/c2_sum
+    return abs(aml1-aml2) # =delta
+
+def constantCoverage(c,p,s,s1,s2):
+    r = binom.rvs(c,p,size = s)
+    class1 = class2 = 0
+    for i in range(s):
+        if i < s1:
+            class1 += r[i]
+        else:
+            class2 += r[i]
+    aml1 = class1/s1/c
+    aml2 = class2/s2/c
+    return abs(aml1-aml2) # =delta
+
+# variable coverage(Poisson distribution) and p(beta distribution)
 def variableCP(a1,b1,a2,b2,s1,s2,c1,c2):
     p1_array = beta.rvs(a1,b1,size = s1)
     p2_array = beta.rvs(a2,b2,size = s2)
@@ -28,7 +59,7 @@ def variableCP(a1,b1,a2,b2,s1,s2,c1,c2):
             c2_sum += c2_array[i-s1]
     aml1 = class1/c1_sum
     aml2 = class2/c2_sum
-    return abs(aml1-aml2)
+    return abs(aml1-aml2) # = delta
 
 def deltas():
     deltas1 = list()
@@ -48,6 +79,7 @@ def deltas():
     deltas2 = sorted(deltas2, reverse = True)
     return deltas1,deltas2
 
+# to draw and show picture
 def picture(deltas1,deltas2):
     plt.plot(np.array(range(1000000))/1000000,deltas1,color="deepskyblue")
     plt.plot(np.array(range(1000000))/1000000,deltas2,color="pink")
@@ -56,6 +88,7 @@ def picture(deltas1,deltas2):
     plt.ylabel("delta")
     plt.show()
 
+#to get index value if input is delta t
 def t_to_i(deltalist,t):
     count = 0
     for i in range(len(deltalist)):
@@ -65,6 +98,7 @@ def t_to_i(deltalist,t):
             break
     return "index = "+str(count/len(deltalist))
 
+#to get t value if input is index
 def i_to_t(deltalist,i):
     t = deltalist[int(i*len(deltalist))]
     return "t = "+str(t)
